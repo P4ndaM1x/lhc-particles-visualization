@@ -13,13 +13,15 @@
 #include <gl\GLU.h>
 #include "imgui/imgui.h" 
 #include "imgui/imgui-SFML.h"
-#include "materials.h"
+#include "csv-parser-master/single_include/csv.hpp"
 
 #include <iostream>
 #include <algorithm>
 #include <numbers>
 #include <unordered_map>
 
-#include "csv-parser-master/single_include/csv.hpp"
+#include "Particles.hpp"
+#include "Scene.hpp"
+#include "GUI.hpp"
 
 #endif //PCH_H
