@@ -42,13 +42,13 @@
     <ClCompile Include="imgui\imgui-SFML.cpp">
       <Filter>Source Files\ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="Scene.cpp">
+    <ClCompile Include="source\GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.cpp">
+    <ClCompile Include="source\Particles.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Particles.cpp">
+    <ClCompile Include="source\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,29 +59,31 @@
     <ClInclude Include="csv-parser-master\include\csv.hpp">
       <Filter>Source Files\csv-parser</Filter>
     </ClInclude>
-    <ClInclude Include="utils.hpp">
+    <ClInclude Include="include\GUI.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.hpp">
+    <ClInclude Include="include\Particles.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.hpp">
+    <ClInclude Include="include\Scene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Particles.hpp">
+    <ClInclude Include="include\utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="merged.csv">
+    <None Include="resources\merged.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="particles_initial.csv">
+    <None Include="resources\particles_initial.csv">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="spacepoints.csv">
+    <None Include="resources\spacepoints.csv">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include=".gitignore" />
+    <None Include=".gitattributes" />
   </ItemGroup>
 </Project>

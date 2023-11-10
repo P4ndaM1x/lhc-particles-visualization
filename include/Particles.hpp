@@ -1,5 +1,4 @@
 #pragma once
-
 #include "utils.hpp"
 
 class Particles {

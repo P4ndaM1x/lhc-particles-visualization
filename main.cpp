@@ -4,11 +4,9 @@ int main()
 {
     bool running = true;
 
-    Particles particles { "spacepoints.csv", "particles_initial.csv" };
+    Particles particles { "D:\\VS22\\cvnn\\resources\\spacepoints.csv", "D:\\VS22\\cvnn\\resources\\particles_initial.csv" };
     Scene scene { particles };
     GUI gui { scene };
-
-    scene.reshapeScreen(gui.window.getSize());
 
     while (running) {
         gui.handleWindowEvents(running);

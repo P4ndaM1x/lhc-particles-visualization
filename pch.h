@@ -20,8 +20,8 @@
 #include <numbers>
 #include <unordered_map>
 
-#include "Particles.hpp"
-#include "Scene.hpp"
-#include "GUI.hpp"
+#include "include/Particles.hpp"
+#include "include/Scene.hpp"
+#include "include/GUI.hpp"
 
 #endif //PCH_H

@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{f237f64e-e59e-49d2-b9de-19d8e38976d0}</ProjectGuid>
+    <ProjectGuid>{6D59CF54-5FA6-4260-B7DD-BC902C0C5DB8}</ProjectGuid>
     <RootNamespace>lab3d</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>cvnn</ProjectName>
@@ -140,7 +140,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="imgui\imgui-SFML.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -162,28 +161,31 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Particles.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="source\GUI.cpp" />
+    <ClCompile Include="source\Particles.cpp" />
+    <ClCompile Include="source\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="csv-parser-master\include\csv.hpp" />
-    <ClInclude Include="GUI.hpp" />
-    <ClInclude Include="Particles.hpp" />
+    <ClInclude Include="include\GUI.hpp" />
+    <ClInclude Include="include\Particles.hpp" />
+    <ClInclude Include="include\Scene.hpp" />
+    <ClInclude Include="include\utils.hpp" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Scene.hpp" />
-    <ClInclude Include="utils.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="merged.csv" />
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
     <None Include="packages.config" />
-    <None Include="particles_initial.csv" />
-    <None Include="spacepoints.csv" />
+    <None Include="resources\merged.csv" />
+    <None Include="resources\particles_initial.csv" />
+    <None Include="resources\spacepoints.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

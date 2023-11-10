@@ -7,9 +7,10 @@ GUI::GUI(Scene& scene,
     : scene { scene }
     , window { windowSize, windowTitle, sf::Style::Default, sf::ContextSettings { 24, 0, 0, 4, 5 } }
 {
-    scene.initOpenGL();
     window.setVerticalSyncEnabled(true);
     ImGui::SFML::Init(window);
+    scene.initOpenGL();
+    scene.reshapeScreen(window.getSize());
 }
 
 GUI::~GUI()
