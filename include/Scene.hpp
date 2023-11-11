@@ -1,9 +1,10 @@
 #pragma once
+#include "../include/Particles.hpp"
 #include "utils.hpp"
 
 class Scene {
 public:
-    Scene(const Particles& particles)
+    Scene(Particles& particles)
         : particles { particles }
     {
     }
@@ -24,12 +25,12 @@ public:
     bool usePerspectiveProjection { true };
     float fov { 45.f };
 
+    Particles& particles;
+
 private:
     void setCamera();
     void drawPositiveRays();
     void drawNegativeRays();
     void applyTransformations();
     void drawParticles();
-
-    const Particles& particles;
 };

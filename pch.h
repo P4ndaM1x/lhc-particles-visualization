@@ -20,8 +20,7 @@
 #include <numbers>
 #include <unordered_map>
 
-#include "include/Particles.hpp"
-#include "include/Scene.hpp"
-#include "include/GUI.hpp"
+constexpr float minFloatValue = std::numeric_limits<float>::min();
+constexpr float maxFloatValue = std::numeric_limits<float>::max();
 
 #endif //PCH_H

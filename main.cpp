@@ -1,5 +1,9 @@
 #include "pch.h"
 
+#include "include/GUI.hpp"
+#include "include/Particles.hpp"
+#include "include/Scene.hpp"
+
 int main()
 {
     bool running = true;

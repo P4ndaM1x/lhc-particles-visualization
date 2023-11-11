@@ -1,5 +1,6 @@
-#include "Scene.hpp"
-#include "pch.h"
+#include "../pch.h"
+
+#include "../include/Scene.hpp"
 
 void Scene::initOpenGL(void)
 {
@@ -70,7 +71,7 @@ void Scene::drawParticles()
 {
     glBegin(GL_POINTS);
     glColor3f(0.0, 0.0, 0.0);
-    for (auto& pair : particles.spacepoints) {
+    for (auto& pair : particles.getFilteredSpacepoints()) {
         auto& point = pair.second;
         glVertex3f(point.x, point.y, point.z);
     }

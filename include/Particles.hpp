@@ -3,14 +3,39 @@
 
 class Particles {
 public:
-    Particles(const std::string& spacepoints_filepath, const std::string& properties_filepath);
+    struct ParticleProperties {
+        float phi, pt, q;
+    };
+    struct SpacepointsMinMax {
+        sf::Vector3f minCoordValue, maxCoordValue;
+        ParticleProperties minPropertyValue, maxPropertyValue;
+    };
 
+    using spacepoints_t = std::vector<std::pair<unsigned, sf::Vector3f>>;
+    using properties_t = std::unordered_map<unsigned, ParticleProperties>;
+
+
+    Particles(const std::string& spacepointsFilepath, const std::string& propertiesFilepath);
+
+    const auto& getAllSpacepoints() const { return spacepoints; };
+    const auto& getAllProperties() const { return properties; }
+    const auto& getStats() const { return stats; }
+    void resetFilters() { filters = stats; }
+
+    const spacepoints_t getFilteredSpacepoints() const;
     void initDataVectors();
+    void calculateDataStats();
 
-    std::vector<std::pair<unsigned, sf::Vector3f>> spacepoints {};
-    std::unordered_map<unsigned, utils::ParticleProperties> properties {};
+    SpacepointsMinMax filters;
 
 private:
-    const std::string spacepoints_filepath;
-    const std::string properties_filepath;
+    bool applyFilters(const Particles::spacepoints_t::value_type& pair) const;
+
+    SpacepointsMinMax stats;
+
+    spacepoints_t spacepoints {};
+    properties_t properties {};
+
+    const std::string spacepointsFilepath;
+    const std::string propertiesFilepath;
 };

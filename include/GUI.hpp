@@ -1,4 +1,5 @@
 #pragma once
+#include "../include/Scene.hpp"
 
 class GUI {
 public:
@@ -13,6 +14,10 @@ public:
     sf::RenderWindow window;
 
 private:
+    void cameraSettings();
+    void transformSettings();
+    void particlesSettings();
+
     Scene& scene;
     sf::Clock deltaClock {};
 };

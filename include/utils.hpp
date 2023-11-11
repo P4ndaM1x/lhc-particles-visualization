@@ -16,8 +16,4 @@ namespace utils{
 		}
 	};
 
-	struct ParticleProperties{
-		float phi, pt, q;
-	};
-
 }
