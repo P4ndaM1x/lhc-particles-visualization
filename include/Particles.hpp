@@ -22,7 +22,9 @@ public:
     const auto& getStats() const { return stats; }
     void resetFilters() { filters = stats; }
 
+    void resetFilter(const char filterName);
     const spacepoints_t getFilteredSpacepoints() const;
+
     void initDataVectors();
     void calculateDataStats();
 

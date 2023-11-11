@@ -2,17 +2,6 @@
 
 #include "../include/Particles.hpp"
 
-#include <ranges>
-
-// struct Particles::ParticleProperties {
-//     float phi, pt, q;
-// };
-//
-// struct Particles::SpacepointsFilters {
-//     sf::Vector3f minXYZ, maxXYZ;
-//     ParticleProperties minProperties, maxProperties;
-// };
-
 Particles::Particles(const std::string& spacepointsFilepath, const std::string& propertiesFilepath)
     : spacepointsFilepath { spacepointsFilepath }
     , propertiesFilepath { propertiesFilepath }
@@ -100,4 +89,36 @@ const Particles::spacepoints_t Particles::getFilteredSpacepoints() const
     std::copy_if(spacepoints.begin(), spacepoints.end(), std::back_inserter(filteredSpacepoints),
         std::bind(std::mem_fn(&Particles::applyFilters), this, std::placeholders::_1));
     return filteredSpacepoints;
+}
+
+void Particles::resetFilter(const char filterName)
+{
+    switch (filterName) {
+    case 'x':
+        filters.minCoordValue.x = stats.minCoordValue.x;
+        filters.maxCoordValue.x = stats.maxCoordValue.x;
+        break;
+    case 'y':
+        filters.minCoordValue.y = stats.minCoordValue.y;
+        filters.maxCoordValue.y = stats.maxCoordValue.y;
+        break;
+    case 'z':
+        filters.minCoordValue.z = stats.minCoordValue.z;
+        filters.maxCoordValue.z = stats.maxCoordValue.z;
+        break;
+    case 'h':
+        filters.minPropertyValue.phi = stats.minPropertyValue.phi;
+        filters.maxPropertyValue.phi = stats.maxPropertyValue.phi;
+        break;
+    case 't':
+        filters.minPropertyValue.pt = stats.minPropertyValue.pt;
+        filters.maxPropertyValue.pt = stats.maxPropertyValue.pt;
+        break;
+    case 'q':
+        filters.minPropertyValue.q = stats.minPropertyValue.q;
+        filters.maxPropertyValue.q = stats.maxPropertyValue.q;
+        break;
+    default:
+        break;
+    }
 }

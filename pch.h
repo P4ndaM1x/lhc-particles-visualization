@@ -7,20 +7,17 @@
 #ifndef PCH_H
 #define PCH_H
 
-#include <SFML\Window.hpp>
+#include "csv-parser-master/single_include/csv.hpp"
+#include "imgui/imgui-SFML.h"
+#include "imgui/imgui.h"
 #include <SFML\Graphics.hpp>
 #include <SFML\OpenGL.hpp>
+#include <SFML\Window.hpp>
 #include <gl\GLU.h>
-#include "imgui/imgui.h" 
-#include "imgui/imgui-SFML.h"
-#include "csv-parser-master/single_include/csv.hpp"
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <numbers>
 #include <unordered_map>
 
-constexpr float minFloatValue = std::numeric_limits<float>::min();
-constexpr float maxFloatValue = std::numeric_limits<float>::max();
-
-#endif //PCH_H
+#endif // PCH_H

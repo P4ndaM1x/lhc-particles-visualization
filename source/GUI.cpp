@@ -35,13 +35,30 @@ void GUI::cameraSettings()
 {
     ImGui::Begin("Camera");
     ImGui::PushItemWidth(ImGui::GetWindowWidth() * .8f);
-    ImGui::SliderFloat("R", &scene.camera.distance, 0.5f, 2 * scene.coord_system_edge);
-    ImGui::SliderAngle("theta", &scene.camera.theta, 0.0f, 360.0f);
-    ImGui::SliderAngle("phi", &scene.camera.phi, 0.0f, 180.0f);
-    if (ImGui::Checkbox("Perspective projection", &scene.usePerspectiveProjection))
+
+    ImGui::SeparatorText("Position");
+    ImGui::SliderFloat("r", &scene.camera.distance, 1.f, 2 * scene.coordRayLength, "%.0f");
+    ImGui::SliderAngle("theta", &scene.camera.theta, 0.f, 360.f);
+    ImGui::SliderAngle("phi", &scene.camera.phi, 0.f, 180.f);
+
+    const ImVec2 buttonSize { ImGui::GetWindowWidth() * .255f, 0 };
+    if (ImGui::Button("XY plane", buttonSize))
+        scene.setXYplaneView();
+    ImGui::SameLine();
+    if (ImGui::Button("XZ plane", buttonSize))
+        scene.setXZplaneView();
+    ImGui::SameLine();
+    if (ImGui::Button("YZ plane", buttonSize))
+        scene.setYZplaneView();
+
+    ImGui::SeparatorText("Projection");
+    ImGui::BeginDisabled(scene.useOrthogonalView);
+    if (ImGui::SliderFloat("FOV", &scene.fov, 10.f, 90.f), "%.0f deg")
         scene.reshapeScreen(window.getSize());
-    if (ImGui::SliderFloat("FoV", &scene.fov, 10.0f, 90.0f))
+    ImGui::EndDisabled();
+    if (ImGui::Checkbox("Orthogonal view", &scene.useOrthogonalView))
         scene.reshapeScreen(window.getSize());
+
     ImGui::End();
 }
 
@@ -49,9 +66,11 @@ void GUI::transformSettings()
 {
     ImGui::Begin("Transformations");
     ImGui::PushItemWidth(ImGui::GetWindowWidth() * .8f);
-    ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&scene.position), -scene.coord_system_edge, scene.coord_system_edge);
-    ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scene.scale), .0f, 2.0f);
-    ImGui::SliderFloat3("Rotation", reinterpret_cast<float*>(&scene.rotation), -180.0f, 180.0f);
+    ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&scene.position), -scene.coordRayLength, scene.coordRayLength, "%.0f");
+    ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scene.scale), .0f, 2.f);
+    ImGui::SliderFloat3("Rotation", reinterpret_cast<float*>(&scene.rotation), -180.f, 180.f, "%.0f deg");
+    if (ImGui::Button("Reset", { ImGui::GetWindowWidth() * .8f, 0 }))
+        scene.resetTransformations();
     ImGui::End();
 }
 
@@ -94,6 +113,27 @@ void GUI::particlesSettings()
     ImGui::DragFloat("maxPt", &filters.maxPropertyValue.pt, propDragSpeed, stats.minPropertyValue.pt, stats.maxPropertyValue.pt);
     ImGui::SameLine();
     ImGui::DragFloat("maxQ", &filters.maxPropertyValue.q, 0.33 * propDragSpeed, stats.minPropertyValue.q, stats.maxPropertyValue.q);
+
+    // resets
+    ImGui::SeparatorText("Resets");
+    const ImVec2 buttonSize { ImGui::GetWindowWidth() * .15f, 0 };
+    if (ImGui::Button("X", buttonSize))
+        scene.particles.resetFilter('x');
+    ImGui::SameLine();
+    if (ImGui::Button("Y", buttonSize))
+        scene.particles.resetFilter('y');
+    ImGui::SameLine();
+    if (ImGui::Button("Z", buttonSize))
+        scene.particles.resetFilter('z');
+    ImGui::SameLine();
+    if (ImGui::Button("Phi", buttonSize))
+        scene.particles.resetFilter('h');
+    ImGui::SameLine();
+    if (ImGui::Button("Pt", buttonSize))
+        scene.particles.resetFilter('t');
+    ImGui::SameLine();
+    if (ImGui::Button("Q", buttonSize))
+        scene.particles.resetFilter('q');
 
     ImGui::End();
 }

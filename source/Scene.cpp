@@ -2,6 +2,26 @@
 
 #include "../include/Scene.hpp"
 
+Scene::Scene(Particles& particles)
+    : particles { particles }
+{
+    resetCamera();
+    resetTransformations();
+}
+
+void Scene::resetCamera()
+{
+    camera = { coordRayLength, 1.f, .2f };
+    fov = 45.f;
+}
+
+void Scene::resetTransformations()
+{
+    position = { 0.f, 0.f, 0.f };
+    scale = { 1.f, 1.f, 1.f };
+    rotation = { 0.f, 0.f, 0.f };
+}
+
 void Scene::initOpenGL(void)
 {
     glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -30,13 +50,13 @@ void Scene::drawPositiveRays()
     glBegin(GL_LINES);
     glColor3f(1.0, 0.0, 0.0);
     glVertex3f(0, 0, 0);
-    glVertex3f(coord_system_edge, 0, 0);
+    glVertex3f(coordRayLength, 0, 0);
     glColor3f(0.0, 1.0, 0.0);
     glVertex3f(0, 0, 0);
-    glVertex3f(0, coord_system_edge, 0);
+    glVertex3f(0, coordRayLength, 0);
     glColor3f(0.0, 0.0, 1.0);
     glVertex3f(0, 0, 0);
-    glVertex3f(0, 0, coord_system_edge);
+    glVertex3f(0, 0, coordRayLength);
     glEnd();
 }
 
@@ -47,13 +67,13 @@ void Scene::drawNegativeRays()
     glBegin(GL_LINES);
     glColor3f(1.0, 0.0, 0.0);
     glVertex3f(0, 0, 0);
-    glVertex3f(-coord_system_edge, 0, 0);
+    glVertex3f(-coordRayLength, 0, 0);
     glColor3f(0.0, 1.0, 0.0);
     glVertex3f(0, 0, 0);
-    glVertex3f(0, -coord_system_edge, 0);
+    glVertex3f(0, -coordRayLength, 0);
     glColor3f(0.0, 0.0, 1.0);
     glVertex3f(0, 0, 0);
-    glVertex3f(0, 0, -coord_system_edge);
+    glVertex3f(0, 0, -coordRayLength);
     glEnd();
     glDisable(GL_LINE_STIPPLE);
 }
@@ -90,13 +110,19 @@ void Scene::draw()
 
 void Scene::reshapeScreen(const sf::Vector2u& windowSize)
 {
-    glViewport(0, 0, (GLsizei)windowSize.x, (GLsizei)windowSize.y);
+    glViewport(0, 0, windowSize.x, windowSize.y);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (Scene::usePerspectiveProjection)
-        gluPerspective(Scene::fov, (GLdouble)windowSize.x / (GLdouble)windowSize.y, 0.1, 100 * (GLdouble)coord_system_edge);
-    else
-        glOrtho(-1.245 * ((GLdouble)windowSize.x / (GLdouble)windowSize.y), 1.245 * ((GLdouble)windowSize.x / (GLdouble)windowSize.y), -1.245, 1.245, -3.0, 12.0);
+
+    const auto& aspectRatio = static_cast<GLdouble>(windowSize.x) / static_cast<GLdouble>(windowSize.y);
+    if (Scene::useOrthogonalView) {
+        const auto temp = 0.25 * coordRayLength;
+        glOrtho(-temp * aspectRatio, temp * aspectRatio, -temp, temp,
+            -5 * coordRayLength, 5 * coordRayLength);
+    } else {
+        gluPerspective(Scene::fov, aspectRatio, 0.1, 10 * coordRayLength);
+    }
+
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -123,4 +149,22 @@ void Scene::handleKeyboardEvents()
         if (camera.phi < 0.0f)
             camera.phi = 0.0f;
     }
+}
+
+void Scene::setXYplaneView()
+{
+    camera.theta = utils::degToRad(90);
+    camera.phi = utils::degToRad(0);
+}
+
+void Scene::setXZplaneView()
+{
+    camera.theta = utils::degToRad(90);
+    camera.phi = utils::degToRad(90);
+}
+
+void Scene::setYZplaneView()
+{
+    camera.theta = utils::degToRad(180);
+    camera.phi = utils::degToRad(0);
 }
