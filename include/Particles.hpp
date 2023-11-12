@@ -13,17 +13,18 @@ public:
 
     using spacepoints_t = std::vector<std::pair<unsigned, sf::Vector3f>>;
     using properties_t = std::unordered_map<unsigned, ParticleProperties>;
-
+    using directions_t = std::unordered_map<unsigned, sf::Vector3f>;
 
     Particles(const std::string& spacepointsFilepath, const std::string& propertiesFilepath);
 
-    const auto& getAllSpacepoints() const { return spacepoints; };
+    const auto& getAllSpacepoints() const { return spacepoints; }
     const auto& getAllProperties() const { return properties; }
+    const auto& getAllDirections() const { return directions; }
     const auto& getStats() const { return stats; }
     void resetFilters() { filters = stats; }
 
     void resetFilter(const char filterName);
-    const spacepoints_t getFilteredSpacepoints() const;
+    const spacepoints_t getFilteredSpacepoints(const std::optional<std::vector<unsigned>> eventIDs = std::nullopt) const;
 
     void initDataVectors();
     void calculateDataStats();
@@ -37,6 +38,7 @@ private:
 
     spacepoints_t spacepoints {};
     properties_t properties {};
+    directions_t directions {};
 
     const std::string spacepointsFilepath;
     const std::string propertiesFilepath;

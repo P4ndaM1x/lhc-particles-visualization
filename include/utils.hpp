@@ -1,5 +1,11 @@
 #pragma once
 
+namespace app {
+
+enum State { ANIMATION,
+    EXPLORER };
+}
+
 namespace utils {
 
 struct Spherical {

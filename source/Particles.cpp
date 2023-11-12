@@ -28,11 +28,15 @@ void Particles::initDataVectors()
 
     const size_t propertiesLength = csv::get_file_info(propertiesFilepath).n_rows;
     properties.reserve(propertiesLength);
+    directions.reserve(propertiesLength);
 
     csv::CSVReader propertiesReader { propertiesFilepath };
     for (csv::CSVRow& row : propertiesReader) {
         properties[row["event_id"].get<unsigned>()] = ParticleProperties {
             row["phi"].get<float>(), row["pt"].get<float>(), row["q"].get<float>()
+        };
+        directions[row["event_id"].get<unsigned>()] = sf::Vector3f {
+            row["px"].get<float>(), row["py"].get<float>(), row["pz"].get<float>()
         };
     }
 }
@@ -82,11 +86,21 @@ bool Particles::applyFilters(const Particles::spacepoints_t::value_type& pair) c
     return isXinRange and isYinRange and isZinRange and isPhiInRange and isPtInRange and isQinRange;
 }
 
-const Particles::spacepoints_t Particles::getFilteredSpacepoints() const
+const Particles::spacepoints_t Particles::getFilteredSpacepoints(const std::optional<std::vector<unsigned>> eventIDs) const
 {
+    Particles::spacepoints_t& spacepointsPool = const_cast<Particles::spacepoints_t&>(spacepoints);
+
+    Particles::spacepoints_t specificEventIDspacepoints;
     Particles::spacepoints_t filteredSpacepoints;
-    filteredSpacepoints.reserve(spacepoints.size());
-    std::copy_if(spacepoints.begin(), spacepoints.end(), std::back_inserter(filteredSpacepoints),
+
+    if (eventIDs.has_value()) {
+        std::copy_if(spacepoints.begin(), spacepoints.end(), std::back_inserter(specificEventIDspacepoints),
+            [&eventIDs](const Particles::spacepoints_t::value_type& pair) { return std::any_of(eventIDs.value().begin(), eventIDs.value().end(), [&pair](const auto& eventID) { return pair.first == eventID; }); });
+        spacepointsPool = specificEventIDspacepoints;
+    }
+    filteredSpacepoints.reserve(spacepointsPool.size());
+
+    std::copy_if(spacepointsPool.begin(), spacepointsPool.end(), std::back_inserter(filteredSpacepoints),
         std::bind(std::mem_fn(&Particles::applyFilters), this, std::placeholders::_1));
     return filteredSpacepoints;
 }

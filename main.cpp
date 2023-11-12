@@ -15,7 +15,7 @@ int main()
     while (running) {
         gui.handleWindowEvents(running);
         scene.handleKeyboardEvents();
-        scene.draw();
+        scene.draw(gui.appState);
         gui.update();
     }
 

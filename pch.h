@@ -19,5 +19,6 @@
 #include <iostream>
 #include <numbers>
 #include <unordered_map>
+#include <optional>
 
 #endif // PCH_H

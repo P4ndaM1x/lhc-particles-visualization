@@ -12,11 +12,13 @@ public:
     void update();
 
     sf::RenderWindow window;
+    app::State appState { app::State::EXPLORER };
 
 private:
     void cameraSettings();
     void transformSettings();
     void particlesSettings();
+    void animationSettings();
 
     Scene& scene;
     sf::Clock deltaClock {};

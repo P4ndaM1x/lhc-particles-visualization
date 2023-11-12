@@ -7,6 +7,7 @@ Scene::Scene(Particles& particles)
 {
     resetCamera();
     resetTransformations();
+    resetAnimation();
 }
 
 void Scene::resetCamera()
@@ -20,6 +21,13 @@ void Scene::resetTransformations()
     position = { 0.f, 0.f, 0.f };
     scale = { 1.f, 1.f, 1.f };
     rotation = { 0.f, 0.f, 0.f };
+}
+
+void Scene::resetAnimation()
+{
+    for (const auto& directs : particles.getAllDirections()) {
+        points[directs.first] = sf::Vector3f { 0, 0, 0 };
+    }
 }
 
 void Scene::initOpenGL(void)
@@ -89,23 +97,99 @@ void Scene::applyTransformations()
 
 void Scene::drawParticles()
 {
-    glBegin(GL_POINTS);
     glColor3f(0.0, 0.0, 0.0);
+    glBegin(GL_POINTS);
     for (auto& pair : particles.getFilteredSpacepoints()) {
         auto& point = pair.second;
         glVertex3f(point.x, point.y, point.z);
     }
     glEnd();
+
+    // glEnableClientState(GL_VERTEX_ARRAY);
+    // std::vector<sf::Vector3f> points;
+    // for (auto& pair : particles.getAllSpacepoints()) {
+    //     points.push_back(pair.second);
+    // }
+    // glVertexPointer(3, GL_FLOAT, sizeof(sf::Vector3f), &points[0].x);
+    // glDrawArrays(GL_POINTS, 0, points.size());
+    // glDisableClientState(GL_VERTEX_ARRAY);
+
+    // std::vector<unsigned> eventIDs;
+    // eventIDs.reserve(particles.getAllProperties().size());
+    // for (auto map : particles.getAllProperties()) {
+    //     eventIDs.push_back(map.first);
+    // }
+
+    // glColor3f(0.5, 0.5, 0.5);
+
+    // for (unsigned id : { 1, 2, 3, 4 }) {
+    //     auto& temp = particles.getFilteredSpacepoints(std::vector<unsigned> { id });
+    //     glBegin(GL_LINE_STRIP);
+    //     for (auto& pair : temp) {
+    //         // if (pair.first != id)
+    //         //     continue;
+    //         // std::cout << "id: " << id << " size: " << temp.size() << std::endl;
+    //         auto& point = pair.second;
+    //         // std::cout << "x:" << point.x << std::endl;
+    //         glVertex3f(point.x, point.y, point.z);
+    //     }
+    //     glEnd();
+    // }
 }
 
-void Scene::draw()
+void Scene::drawPoints()
+{
+    glColor3f(0.0, 0.0, 0.0);
+    glBegin(GL_POINTS);
+    for (auto& pt : points) {
+        const auto& props = particles.getAllProperties().at(pt.first);
+        const auto& filters = particles.filters;
+
+        bool isPhiInRange = props.phi >= filters.minPropertyValue.phi and props.phi <= filters.maxPropertyValue.phi;
+        bool isPtInRange = props.pt >= filters.minPropertyValue.pt and props.pt <= filters.maxPropertyValue.pt;
+        bool isQinRange = props.q >= filters.minPropertyValue.q and props.q <= filters.maxPropertyValue.q;
+
+        if (isPhiInRange and isPtInRange and isQinRange) {
+            const auto& coords = pt.second;
+            glVertex3f(coords.x, coords.y, coords.z);
+        }
+    }
+    glEnd();
+
+    if (not animationRunning)
+        return;
+
+    const auto frequency = 1.f / animationFPS;
+    if (timer.getElapsedTime().asSeconds() >= frequency) {
+        const auto& directions = particles.getAllDirections();
+        for (auto& pt : points) {
+            const auto& eventID = pt.first;
+            auto& coords = pt.second;
+            coords.x -= frequency * animationSpeed * directions.at(eventID).x;
+            coords.y -= frequency * animationSpeed * directions.at(eventID).y;
+            coords.z -= frequency * animationSpeed * directions.at(eventID).z;
+        }
+        timer.restart();
+    }
+}
+
+void Scene::draw(const app::State appState)
 {
     clear();
     setCamera();
     drawPositiveRays();
     drawNegativeRays();
     applyTransformations();
-    drawParticles();
+    switch (appState) {
+    case app::State::EXPLORER:
+        drawParticles();
+        break;
+    case app::State::ANIMATION:
+        drawPoints();
+        break;
+    default:
+        break;
+    }
 }
 
 void Scene::reshapeScreen(const sf::Vector2u& windowSize)

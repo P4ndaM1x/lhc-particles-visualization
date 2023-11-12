@@ -85,6 +85,7 @@ void GUI::particlesSettings()
     ImGui::PushItemWidth(ImGui::GetWindowWidth() * .25f);
     const float coordDragSpeed { 2 };
 
+    ImGui::BeginDisabled(appState == app::State::ANIMATION);
     ImGui::DragFloat("minX", &filters.minCoordValue.x, coordDragSpeed, stats.minCoordValue.x, stats.maxCoordValue.x);
     ImGui::SameLine();
     ImGui::DragFloat("minY", &filters.minCoordValue.y, coordDragSpeed, stats.minCoordValue.y, stats.maxCoordValue.y);
@@ -96,6 +97,7 @@ void GUI::particlesSettings()
     ImGui::DragFloat("maxY", &filters.maxCoordValue.y, coordDragSpeed, stats.minCoordValue.y, stats.maxCoordValue.y);
     ImGui::SameLine();
     ImGui::DragFloat("maxZ", &filters.maxCoordValue.z, 3 * coordDragSpeed, stats.minCoordValue.z, stats.maxCoordValue.z);
+    ImGui::EndDisabled();
 
     // properties
     ImGui::SeparatorText("Properties range");
@@ -117,6 +119,8 @@ void GUI::particlesSettings()
     // resets
     ImGui::SeparatorText("Resets");
     const ImVec2 buttonSize { ImGui::GetWindowWidth() * .15f, 0 };
+
+    ImGui::BeginDisabled(appState == app::State::ANIMATION);
     if (ImGui::Button("X", buttonSize))
         scene.particles.resetFilter('x');
     ImGui::SameLine();
@@ -125,6 +129,8 @@ void GUI::particlesSettings()
     ImGui::SameLine();
     if (ImGui::Button("Z", buttonSize))
         scene.particles.resetFilter('z');
+    ImGui::EndDisabled();
+
     ImGui::SameLine();
     if (ImGui::Button("Phi", buttonSize))
         scene.particles.resetFilter('h');
@@ -138,6 +144,34 @@ void GUI::particlesSettings()
     ImGui::End();
 }
 
+void GUI::animationSettings()
+{
+
+    ImGui::Begin("Application control");
+
+    ImGui::RadioButton("detection explorer", reinterpret_cast<int*>(&appState), app::State::EXPLORER);
+    ImGui::SameLine();
+    ImGui::RadioButton("collision animation", reinterpret_cast<int*>(&appState), app::State::ANIMATION);
+    ImGui::SeparatorText("Animation options");
+
+    ImGui::BeginDisabled(appState == app::State::EXPLORER);
+    ImGui::SliderFloat("particles speed", &scene.animationSpeed, .1f, 10.f);
+    ImGui::SliderInt("frames per second", &scene.animationFPS, 1, 144);
+
+    const ImVec2 buttonSize { ImGui::GetWindowWidth() * .15f, 0 };
+    const char* startStopButtonLabel = "Start";
+    if (scene.animationRunning)
+        startStopButtonLabel = "Stop";
+    if (ImGui::Button(startStopButtonLabel, buttonSize))
+        scene.animationRunning = not scene.animationRunning;
+    ImGui::SameLine();
+    if (ImGui::Button("Restart", buttonSize))
+        scene.resetAnimation();
+    ImGui::EndDisabled();
+
+    ImGui::End();
+}
+
 void GUI::update()
 {
     ImGui::SFML::Update(window, deltaClock.restart());
@@ -145,6 +179,7 @@ void GUI::update()
     cameraSettings();
     transformSettings();
     particlesSettings();
+    animationSettings();
 
     ImGui::SFML::Render(window);
     window.display();
