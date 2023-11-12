@@ -28,12 +28,22 @@ void GUI::handleWindowEvents(bool& runningFlag)
             runningFlag = false;
         if (event.type == sf::Event::Resized)
             scene.reshapeScreen(window.getSize());
+        if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right) {
+            lastMousePosition = sf::Vector2i(event.mouseButton.x, event.mouseButton.y);
+        }
+        if (event.type == sf::Event::MouseMoved && sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+            scene.camera.theta += 2.f / window.getSize().x * (event.mouseMove.x - lastMousePosition.x);
+            scene.camera.phi += 2.f / window.getSize().y * (event.mouseMove.y - lastMousePosition.y);
+            lastMousePosition = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
+        }
+        if (event.type == sf::Event::MouseWheelScrolled && event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
+            scene.camera.distance -= .05f * scene.coordRayLength * event.mouseWheelScroll.delta;
+        }
     }
 }
 
 void GUI::cameraSettings()
 {
-    ImGui::Begin("Camera");
     ImGui::PushItemWidth(ImGui::GetWindowWidth() * .8f);
 
     ImGui::SeparatorText("Position");
@@ -58,20 +68,22 @@ void GUI::cameraSettings()
     ImGui::EndDisabled();
     if (ImGui::Checkbox("Orthogonal view", &scene.useOrthogonalView))
         scene.reshapeScreen(window.getSize());
-
-    ImGui::End();
 }
 
 void GUI::transformSettings()
 {
-    ImGui::Begin("Transformations");
     ImGui::PushItemWidth(ImGui::GetWindowWidth() * .8f);
+
+    ImGui::SeparatorText("Transformations");
     ImGui::SliderFloat3("Position", reinterpret_cast<float*>(&scene.position), -scene.coordRayLength, scene.coordRayLength, "%.0f");
     ImGui::SliderFloat3("Scale", reinterpret_cast<float*>(&scene.scale), .0f, 2.f);
     ImGui::SliderFloat3("Rotation", reinterpret_cast<float*>(&scene.rotation), -180.f, 180.f, "%.0f deg");
     if (ImGui::Button("Reset", { ImGui::GetWindowWidth() * .8f, 0 }))
         scene.resetTransformations();
-    ImGui::End();
+
+    ImGui::SeparatorText("Particles apperance");
+    ImGui::SliderFloat("Size", &scene.particleSize, 1.f, 5.f, "%.0f");
+    ImGui::ColorEdit3("Color", reinterpret_cast<float*>(&scene.particleColor));
 }
 
 void GUI::particlesSettings()
@@ -176,8 +188,20 @@ void GUI::update()
 {
     ImGui::SFML::Update(window, deltaClock.restart());
 
-    cameraSettings();
-    transformSettings();
+    ImGui::Begin("View control");
+    if (ImGui::BeginTabBar("MyTabBar")) {
+        if (ImGui::BeginTabItem("Camera")) {
+            cameraSettings();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Cloud settings")) {
+            transformSettings();
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+    }
+    ImGui::End();
+
     particlesSettings();
     animationSettings();
 

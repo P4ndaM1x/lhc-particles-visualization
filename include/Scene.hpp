@@ -32,15 +32,19 @@ public:
     int animationFPS { 120 };
     bool animationRunning { false };
 
+    float particleSize { 1 };
+    sf::Vector3f particleColor { 0, 0, 0 };
+
     Particles& particles;
 
 private:
     void setCamera();
     void drawPositiveRays();
     void drawNegativeRays();
-    void applyTransformations();
     void drawParticles();
     void drawPoints();
+    void applyTransformations();
+    void applyAppearance();
 
     sf::Clock timer {};
 };

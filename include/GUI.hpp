@@ -4,7 +4,7 @@
 class GUI {
 public:
     GUI(Scene& scene,
-        const sf::VideoMode& windowSize = { 1280, 1024 },
+        const sf::VideoMode& windowSize = { 1440, 1024 },
         const sf::String& windowTitle = { "ATLAS particles" });
     ~GUI();
 
@@ -21,5 +21,6 @@ private:
     void animationSettings();
 
     Scene& scene;
+    sf::Vector2i lastMousePosition { 0, 0 };
     sf::Clock deltaClock {};
 };

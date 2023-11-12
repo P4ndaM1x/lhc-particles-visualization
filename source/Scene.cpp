@@ -95,51 +95,26 @@ void Scene::applyTransformations()
     glScalef(scale.x, scale.y, scale.z);
 }
 
+void Scene::applyAppearance(){
+
+    glPointSize(particleSize);
+    glColor3f(particleColor.x, particleColor.y, particleColor.z);
+}
+
 void Scene::drawParticles()
 {
-    glColor3f(0.0, 0.0, 0.0);
+    applyAppearance();
     glBegin(GL_POINTS);
     for (auto& pair : particles.getFilteredSpacepoints()) {
         auto& point = pair.second;
         glVertex3f(point.x, point.y, point.z);
     }
     glEnd();
-
-    // glEnableClientState(GL_VERTEX_ARRAY);
-    // std::vector<sf::Vector3f> points;
-    // for (auto& pair : particles.getAllSpacepoints()) {
-    //     points.push_back(pair.second);
-    // }
-    // glVertexPointer(3, GL_FLOAT, sizeof(sf::Vector3f), &points[0].x);
-    // glDrawArrays(GL_POINTS, 0, points.size());
-    // glDisableClientState(GL_VERTEX_ARRAY);
-
-    // std::vector<unsigned> eventIDs;
-    // eventIDs.reserve(particles.getAllProperties().size());
-    // for (auto map : particles.getAllProperties()) {
-    //     eventIDs.push_back(map.first);
-    // }
-
-    // glColor3f(0.5, 0.5, 0.5);
-
-    // for (unsigned id : { 1, 2, 3, 4 }) {
-    //     auto& temp = particles.getFilteredSpacepoints(std::vector<unsigned> { id });
-    //     glBegin(GL_LINE_STRIP);
-    //     for (auto& pair : temp) {
-    //         // if (pair.first != id)
-    //         //     continue;
-    //         // std::cout << "id: " << id << " size: " << temp.size() << std::endl;
-    //         auto& point = pair.second;
-    //         // std::cout << "x:" << point.x << std::endl;
-    //         glVertex3f(point.x, point.y, point.z);
-    //     }
-    //     glEnd();
-    // }
 }
 
 void Scene::drawPoints()
 {
-    glColor3f(0.0, 0.0, 0.0);
+    applyAppearance();
     glBegin(GL_POINTS);
     for (auto& pt : points) {
         const auto& props = particles.getAllProperties().at(pt.first);
